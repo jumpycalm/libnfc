@@ -32,19 +32,6 @@ Important note: this file covers POSIX systems, for Windows please read README-W
 Requirements
 ============
 
-Some NFC drivers depend on third party software:
-
-* pn53x_usb & acr122_usb:
-  
-  - libusb-0.1 http://libusb.sf.net
-
-* acr122_pcsc:
-  
-  - pcsc-lite https://pcsclite.apdu.fr/
-- pcsc:
-  
-  - Support build with pcsc driver, which can be using all compatible readers, Feitian R502 and bR500 already passed the test.
-
 The regression test suite depends on the cutter framework:
 http://cutter.sf.net
 
