@@ -9,9 +9,9 @@ SET(EXAMPLES-SOURCES
   nfc-poll
   nfc-relay
   nfc-st25tb
-  pn53x-diagnose
-  pn53x-sam
-  pn53x-tamashell
+#  pn53x-diagnose
+#  pn53x-sam
+#  pn53x-tamashell
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../libnfc)
