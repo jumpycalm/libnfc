@@ -2,12 +2,6 @@
 IF(WIN32)
   SET(WINDOWS_SOURCES ../contrib/win32/stdlib)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../contrib/win32)
-
-  # Add in the rc for version information in the dll
-  LIST(APPEND WINDOWS_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/../windows/libnfc.rc)
-  IF (NOT MINGW)
-    LIST(APPEND WINDOWS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../contrib/win32/nfc_msvc.def)
-  ENDIF()
 ENDIF(WIN32)
 
 # Library's chips

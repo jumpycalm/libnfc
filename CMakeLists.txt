@@ -70,11 +70,6 @@ option (BUILD_UTILS "build utils ON/OFF" ON)
 option (BUILD_DEBPKG "build debian package ON/OFF" OFF)
 
 
-# Doxygen
-SET(builddir "${CMAKE_BINARY_DIR}")
-SET(top_srcdir "${CMAKE_SOURCE_DIR}")
-INCLUDE(UseDoxygen)
-
 IF(DEFINED CMAKE_INSTALL_LIBDIR)
   SET(libdir ${CMAKE_INSTALL_LIBDIR})
 ELSE(DEFINED CMAKE_INSTALL_LIBDIR)
@@ -120,8 +115,6 @@ IF(NOT WIN32)
   SET(PACKAGE "libnfc")
   # CMake lists are separated by a semi colon, replace with colon
   STRING(REPLACE ";" "," PKG_CONFIG_REQUIRES "${PKG_REQ}")
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/libnfc.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libnfc.pc @ONLY) 
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libnfc.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 ENDIF(NOT WIN32)
 
 INCLUDE(LibnfcDrivers)
@@ -164,9 +157,6 @@ IF(WIN32)
   SET(RC_COMMENT "${PACKAGE_NAME} library")
   SET(RC_INTERNAL_NAME "${PACKAGE_NAME} ${WIN32_MODE}")
   SET(RC_ORIGINAL_NAME ${PACKAGE_NAME}.dll)
-  # RC_FILE_TYPE: VFT_DLL
-  SET(RC_FILE_TYPE 0x00000002L)
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/contrib/win32/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/windows/libnfc.rc @ONLY)
 ENDIF(WIN32)
 
 ADD_SUBDIRECTORY(libnfc)
@@ -199,31 +189,7 @@ if (NOT MSVC)
 
   set ( LIBNFC_USE_FILE ${CMAKE_INSTALL_PREFIX}/${LIBNFC_CMAKE_CONFIG_DIR}/UseLibNFC.cmake )
 
-
-          
-  if(CMAKE_VERSION VERSION_LESS 2.8.8)
-    configure_file ( cmake/LibNFCConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibNFCConfig.cmake @ONLY )
-    configure_file ( cmake/LibNFCConfigVersion.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibNFCConfigVersion.cmake @ONLY )
-  else ()
-    include(CMakePackageConfigHelpers)
-    configure_package_config_file (
-      cmake/LibNFCConfig.cmake.in
-      ${CMAKE_CURRENT_BINARY_DIR}/LibNFCConfig.cmake
-      INSTALL_DESTINATION ${LIBNFC_CMAKE_CONFIG_DIR}
-      PATH_VARS
-        LIBNFC_USE_FILE
-        LIBNFC_ROOT_DIR
-        LIBNFC_INCLUDE_DIR
-        LIBNFC_INCLUDE_DIRS
-        LIBNFC_LIBRARY_DIRS
-        NO_CHECK_REQUIRED_COMPONENTS_MACRO
-    )
-    write_basic_package_version_file (
-      LibNFCConfigVersion.cmake 
-      VERSION ${LIBNFC_VERSION_STRING} 
-      COMPATIBILITY AnyNewerVersion
-    )
-  endif ()
+  include(CMakePackageConfigHelpers)
    
   install ( FILES ${CMAKE_CURRENT_BINARY_DIR}/LibNFCConfig.cmake
                   ${CMAKE_CURRENT_BINARY_DIR}/LibNFCConfigVersion.cmake
@@ -247,12 +213,6 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Near Field Communication (NFC) library")
 SET(CPACK_PACKAGE_VENDOR "Roel Verdult")
 SET(CPACK_PACKAGE_CONTACT "Roel Verdult <roel@libnfc.org>")
 
-#Readme file
-IF(WIN32)
-  SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README-Windows.md")
-ELSE(WIN32)
-  SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-ENDIF(WIN32)
 
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "libnfc")

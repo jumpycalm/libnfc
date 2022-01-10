@@ -24,10 +24,6 @@ FOREACH(source ${EXAMPLES-SOURCES})
     SET(RC_COMMENT "${PACKAGE_NAME} example")
     SET(RC_INTERNAL_NAME ${source})
     SET(RC_ORIGINAL_NAME ${source}.exe)
-    # RC_FILE_TYPE: VFT_APP
-    SET(RC_FILE_TYPE 0x00000001L)
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../contrib/win32/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/../windows/${source}.rc @ONLY)
-    LIST(APPEND TARGETS ${CMAKE_CURRENT_BINARY_DIR}/../windows/${source}.rc)
 	
 	  
 	IF(${source} MATCHES "nfc-st25tb")
@@ -40,13 +36,6 @@ FOREACH(source ${EXAMPLES-SOURCES})
   TARGET_LINK_LIBRARIES(${source} nfcutils)
   INSTALL(TARGETS ${source} RUNTIME DESTINATION bin COMPONENT examples)
 ENDFOREACH(source)
-
-#install required libraries
-IF(WIN32)
-  INCLUDE(InstallRequiredSystemLibraries)
-  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake/FixBundle.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/FixBundle.cmake @ONLY)
-  INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/FixBundle.cmake)
-ENDIF(WIN32)
 
 IF(NOT WIN32)
   # Manuals for the examples

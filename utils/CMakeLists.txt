@@ -23,10 +23,6 @@ FOREACH(source ${UTILS-SOURCES})
     SET(RC_COMMENT "${PACKAGE_NAME} utility")
     SET(RC_INTERNAL_NAME ${source})
     SET(RC_ORIGINAL_NAME ${source}.exe)
-    # RC_FILE_TYPE: VFT_APP
-    SET(RC_FILE_TYPE 0x00000001L)
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../contrib/win32/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/../windows/${source}.rc @ONLY)
-    LIST(APPEND TARGETS ${CMAKE_CURRENT_BINARY_DIR}/../windows/${source}.rc)
   ENDIF(WIN32)
 
   IF(${source} MATCHES "nfc-jewel")
@@ -54,13 +50,6 @@ FOREACH(source ${UTILS-SOURCES})
 
   INSTALL(TARGETS ${source} RUNTIME DESTINATION bin COMPONENT utils)
 ENDFOREACH(source)
-
-#install required libraries
-IF(WIN32)
-  INCLUDE(InstallRequiredSystemLibraries)
-  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake/FixBundle.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/FixBundle.cmake @ONLY)
-  INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/FixBundle.cmake)
-ENDIF(WIN32)
 
 IF(NOT WIN32)
   # Manuals for the examples
