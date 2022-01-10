@@ -96,11 +96,8 @@ ENDIF(NOT DEFINED SHARE_INSTALL_PREFIX)
 # Additonnal GCC flags
 IF(CMAKE_COMPILER_IS_GNUCC)
   # Make sure we will not miss some warnings ;)
-  SET(CMAKE_C_FLAGS "-Wall -pedantic -std=c99 ${CMAKE_C_FLAGS}")
+  SET(CMAKE_C_FLAGS "-Wall -pedantic -std=c11 ${CMAKE_C_FLAGS}")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
-
-# Workarounds for libusb in C99
-ADD_DEFINITIONS(-Du_int8_t=uint8_t -Du_int16_t=uint16_t)
 
 IF(MINGW)
   IF (CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
