@@ -1,18 +1,18 @@
 # Windows MinGW workarounds
 IF(WIN32)
-  SET(WINDOWS_SOURCES ../contrib/win32/stdlib)
+  SET(WINDOWS_SOURCES ../contrib/win32/stdlib.c)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../contrib/win32)
 ENDIF(WIN32)
 
 # Library's chips
-SET(CHIPS_SOURCES chips/pn53x)
+SET(CHIPS_SOURCES chips/pn53x.c)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/chips)
 
 # Library's buses
 IF(UART_REQUIRED)
   IF(WIN32)
     # Windows have a special implementation for UART
-    LIST(APPEND BUSES_SOURCES ../contrib/win32/libnfc/buses/uart)
+    LIST(APPEND BUSES_SOURCES ../contrib/win32/libnfc/buses/uart.c)
   ELSE(WIN32)
     LIST(APPEND BUSES_SOURCES buses/uart)
   ENDIF(WIN32)
@@ -41,7 +41,7 @@ ENDIF(SPI_REQUIRED)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/buses)
 
 # Library
-SET(LIBRARY_SOURCES nfc nfc-device nfc-emulation nfc-internal conf iso14443-subr mirror-subr target-subr ${DRIVERS_SOURCES} ${BUSES_SOURCES} ${CHIPS_SOURCES} ${WINDOWS_SOURCES})
+SET(LIBRARY_SOURCES nfc.c nfc-device.c nfc-emulation.c nfc-internal.c conf.c iso14443-subr.c mirror-subr.c target-subr.c ${DRIVERS_SOURCES} ${BUSES_SOURCES} ${CHIPS_SOURCES} ${WINDOWS_SOURCES})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 IF(LIBNFC_LOG)
@@ -49,9 +49,9 @@ IF(LIBNFC_LOG)
     IF(MINGW)
       SET(CMAKE_C_FLAGS "-fgnu89-inline ${CMAKE_C_FLAGS}")
     ENDIF(MINGW)
-    LIST(APPEND LIBRARY_SOURCES log ../contrib/win32/libnfc/log-internal)
+    LIST(APPEND LIBRARY_SOURCES log.c ../contrib/win32/libnfc/log-internal.c)
   ELSE(WIN32)
-    LIST(APPEND LIBRARY_SOURCES log log-internal)
+    LIST(APPEND LIBRARY_SOURCES log.c log-internal.c)
   ENDIF(WIN32)
 ENDIF(LIBNFC_LOG)
 ADD_LIBRARY(nfc SHARED ${LIBRARY_SOURCES})
