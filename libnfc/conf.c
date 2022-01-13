@@ -45,19 +45,9 @@
 #define LOG_CATEGORY "libnfc.config"
 #define LOG_GROUP    NFC_LOG_GROUP_CONFIG
 
-#ifndef LIBNFC_SYSCONFDIR
-// If this define does not already exists, we build it using SYSCONFDIR
-#ifndef SYSCONFDIR
-#error "SYSCONFDIR is not defined but required."
-#endif // SYSCONFDIR
-#define LIBNFC_SYSCONFDIR      SYSCONFDIR"/nfc"
-#endif // LIBNFC_SYSCONFDIR
+#define LIBNFC_CONFFILE "libnfc.conf"
 
-#define LIBNFC_CONFFILE        LIBNFC_SYSCONFDIR"/libnfc.conf"
-#define LIBNFC_DEVICECONFDIR   LIBNFC_SYSCONFDIR"/devices.d"
-
-static int
-escaped_value(const char line[BUFSIZ], int i, char **value)
+static int escaped_value(const char line[BUFSIZ], int i, char **value)
 {
   if (line[i] != '"')
     goto FAIL;
@@ -89,8 +79,7 @@ FAIL:
   return -1;
 }
 
-static int
-non_escaped_value(const char line[BUFSIZ], int i, char **value)
+static int non_escaped_value(const char line[BUFSIZ], int i, char **value)
 {
   int c = 0;
   while (line[i] && !isspace(line[i])) {
@@ -115,8 +104,7 @@ FAIL:
   return -1;
 }
 
-static int
-parse_line(const char line[BUFSIZ], char **key, char **value)
+static int parse_line(const char line[BUFSIZ], char **key, char **value)
 {
   *key = NULL;
   *value = NULL;
@@ -168,14 +156,12 @@ parse_line(const char line[BUFSIZ], char **key, char **value)
   return -1;
 }
 
-static void
-conf_parse_file(const char *filename,
-                void (*conf_keyvalue)(void *data, const char *key, const char *value),
-                void *data)
+static void conf_parse_file(const char *filename, void (*conf_keyvalue)(void *data, const char *key, const char *value), void *data)
 {
   FILE *f = fopen(filename, "r");
   if (!f) {
     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_INFO, "Unable to open file: %s", filename);
+    printf("Unable to open file: %s\n", filename);
     return;
   }
   char line[BUFSIZ];
@@ -206,8 +192,7 @@ conf_parse_file(const char *filename,
   return;
 }
 
-static void
-conf_keyvalue_context(void *data, const char *key, const char *value)
+static void conf_keyvalue_context(void *data, const char *key, const char *value)
 {
   nfc_context *context = (nfc_context *)data;
   log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "key: [%s], value: [%s]", key, value);
@@ -252,51 +237,10 @@ conf_keyvalue_context(void *data, const char *key, const char *value)
   }
 }
 
-static void
-conf_keyvalue_device(void *data, const char *key, const char *value)
-{
-  char newkey[BUFSIZ];
-  sprintf(newkey, "device.%s", key);
-  conf_keyvalue_context(data, newkey, value);
-}
 
-static void
-conf_devices_load(const char *dirname, nfc_context *context)
-{
-  DIR *d = opendir(dirname);
-  if (!d) {
-    log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Unable to open directory: %s", dirname);
-  } else {
-    struct dirent *de;
-    while ((de =  readdir(d)) != NULL)  {
-      // FIXME add a way to sort devices
-      if (de->d_name[0] != '.') {
-        const size_t filename_len = strlen(de->d_name);
-        const size_t extension_len = strlen(".conf");
-        if ((filename_len > extension_len) &&
-            (strncmp(".conf", de->d_name + (filename_len - extension_len), extension_len) == 0)) {
-          char filename[BUFSIZ] = LIBNFC_DEVICECONFDIR"/";
-          strcat(filename, de->d_name);
-          struct stat s;
-          if (stat(filename, &s) == -1) {
-            perror("stat");
-            continue;
-          }
-          if (S_ISREG(s.st_mode)) {
-            conf_parse_file(filename, conf_keyvalue_device, context);
-          }
-        }
-      }
-    }
-    closedir(d);
-  }
-}
-
-void
-conf_load(nfc_context *context)
+void conf_load(nfc_context *context)
 {
   conf_parse_file(LIBNFC_CONFFILE, conf_keyvalue_context, context);
-  conf_devices_load(LIBNFC_DEVICECONFDIR, context);
 }
 
 #endif // CONFFILES

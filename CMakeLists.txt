@@ -18,7 +18,6 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
 # config.h
 IF(WIN32)
-  SET(LIBNFC_SYSCONFDIR "./config" CACHE PATH "libnfc configuration directory")
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config_windows.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/contrib/win32)
     IF(NOT MINGW)

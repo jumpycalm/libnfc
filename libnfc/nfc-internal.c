@@ -48,8 +48,7 @@
 #define LOG_GROUP    NFC_LOG_GROUP_GENERAL
 #define LOG_CATEGORY "libnfc.general"
 
-void
-string_as_boolean(const char *s, bool *value)
+void string_as_boolean(const char *s, bool *value)
 {
   if (s) {
     if (!(*value)) {
@@ -70,8 +69,7 @@ string_as_boolean(const char *s, bool *value)
   }
 }
 
-nfc_context *
-nfc_context_new(void)
+nfc_context *nfc_context_new(void)
 {
   nfc_context *res = malloc(sizeof(*res));
 
@@ -80,8 +78,8 @@ nfc_context_new(void)
   }
 
   // Set default context values
-  res->allow_autoscan = true;
-  res->allow_intrusive_scan = true;
+  res->allow_autoscan = false;
+  res->allow_intrusive_scan = false;
 #ifdef DEBUG
   res->log_level = 3;
 #else
@@ -120,15 +118,13 @@ nfc_context_new(void)
   return res;
 }
 
-void
-nfc_context_free(nfc_context *context)
+void nfc_context_free(nfc_context *context)
 {
   log_exit();
   free(context);
 }
 
-void
-prepare_initiator_data(const nfc_modulation nm, uint8_t **ppbtInitiatorData, size_t *pszInitiatorData)
+void prepare_initiator_data(const nfc_modulation nm, uint8_t **ppbtInitiatorData, size_t *pszInitiatorData)
 {
   switch (nm.nmt) {
     case NMT_ISO14443B:
@@ -159,8 +155,7 @@ prepare_initiator_data(const nfc_modulation nm, uint8_t **ppbtInitiatorData, siz
   }
 }
 
-int
-connstring_decode(const nfc_connstring connstring, const char *driver_name, const char *bus_name, char **pparam1, char **pparam2)
+int connstring_decode(const nfc_connstring connstring, const char *driver_name, const char *bus_name, char **pparam1, char **pparam2)
 {
   if (driver_name == NULL) {
     driver_name = "";
