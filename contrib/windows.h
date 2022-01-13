@@ -44,21 +44,11 @@
 */
 #    define snprintf(S, n, ...) sprintf(S, __VA_ARGS__)
 #    define pipe(fds) _pipe(fds, 5000, _O_BINARY)
-#    define ETIMEDOUT     WSAETIMEDOUT
-#    define ENOTSUP       WSAEOPNOTSUPP
-#    define ECONNABORTED  WSAECONNABORTED
 #  else
 #ifndef _MSC_VER
 #    define snprintf sprintf_s
 #endif
 #    define strdup _strdup
 #  endif
-
-/*
- * setenv and unsetenv are not Windows compliant nor implemented in MinGW.
- * These declarations get rid of the "implicit declaration warning."
- */
-int setenv(const char *name, const char *value, int overwrite);
-void unsetenv(const char *name);
 
 #endif

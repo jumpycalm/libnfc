@@ -365,30 +365,8 @@ nfc_list_devices(nfc_context *context, nfc_connstring connstrings[], const size_
       // let's make sure the device exists
       nfc_device *pnd = NULL;
 
-#ifdef ENVVARS
-      char *env_log_level = getenv("LIBNFC_LOG_LEVEL");
-      char *old_env_log_level = NULL;
-      // do it silently
-      if (env_log_level) {
-        if ((old_env_log_level = malloc(strlen(env_log_level) + 1)) == NULL) {
-          log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_ERROR, "%s", "Unable to malloc()");
-          return 0;
-        }
-        strcpy(old_env_log_level, env_log_level);
-      }
-      setenv("LIBNFC_LOG_LEVEL", "0", 1);
-#endif // ENVVARS
-
       pnd = nfc_open(context, context->user_defined_devices[i].connstring);
 
-#ifdef ENVVARS
-      if (old_env_log_level) {
-        setenv("LIBNFC_LOG_LEVEL", old_env_log_level, 1);
-        free(old_env_log_level);
-      } else {
-        unsetenv("LIBNFC_LOG_LEVEL");
-      }
-#endif // ENVVARS
 
       if (pnd) {
         nfc_close(pnd);

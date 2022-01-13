@@ -96,49 +96,10 @@ nfc_context_new(void)
   }
   res->user_defined_device_count = 0;
 
-#ifdef ENVVARS
-  // Load user defined device from environment variable at first
-  char *envvar = getenv("LIBNFC_DEFAULT_DEVICE");
-  if (envvar) {
-    strcpy(res->user_defined_devices[0].name, "user defined default device");
-    strncpy(res->user_defined_devices[0].connstring, envvar, NFC_BUFSIZE_CONNSTRING);
-    res->user_defined_devices[0].connstring[NFC_BUFSIZE_CONNSTRING - 1] = '\0';
-    res->user_defined_device_count++;
-  }
-
-#endif // ENVVARS
-
 #ifdef CONFFILES
   // Load options from configuration file (ie. /etc/nfc/libnfc.conf)
   conf_load(res);
 #endif // CONFFILES
-
-#ifdef ENVVARS
-  // Environment variables
-
-  // Load user defined device from environment variable as the only reader
-  envvar = getenv("LIBNFC_DEVICE");
-  if (envvar) {
-    strcpy(res->user_defined_devices[0].name, "user defined device");
-    strncpy(res->user_defined_devices[0].connstring, envvar, NFC_BUFSIZE_CONNSTRING);
-    res->user_defined_devices[0].connstring[NFC_BUFSIZE_CONNSTRING - 1] = '\0';
-    res->user_defined_device_count = 1;
-  }
-
-  // Load "auto scan" option
-  envvar = getenv("LIBNFC_AUTO_SCAN");
-  string_as_boolean(envvar, &(res->allow_autoscan));
-
-  // Load "intrusive scan" option
-  envvar = getenv("LIBNFC_INTRUSIVE_SCAN");
-  string_as_boolean(envvar, &(res->allow_intrusive_scan));
-
-  // log level
-  envvar = getenv("LIBNFC_LOG_LEVEL");
-  if (envvar) {
-    res->log_level = atoi(envvar);
-  }
-#endif // ENVVARS
 
   // Initialize log before use it...
   log_init(res);

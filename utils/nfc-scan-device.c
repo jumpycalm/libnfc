@@ -86,7 +86,6 @@ main(int argc, const char *argv[])
       verbose = true;
     } else if (0 == strcmp(argv[arg], "-i")) {
       // This has to be done before the call to nfc_init()
-      setenv("LIBNFC_INTRUSIVE_SCAN", "yes", 1);
     } else {
       ERR("%s is not supported option.", argv[arg]);
       print_usage(argv);
